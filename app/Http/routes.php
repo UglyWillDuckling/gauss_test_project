@@ -54,6 +54,7 @@ Route::post('/signin', [
 Route::get('/signout', [
     'uses' => 'AuthController@getSignout',
     'as' => 'auth.signout',
+    'middleware' => ['auth']
 ]);
 
 /*
@@ -76,11 +77,11 @@ Route::post('/search', [
 |event routes
 |------------------------------------------------------------------------
 |
-|display events, add and delete them
+|display events, add and delete them(also vote)
 |
 */
 
-Route::get('/events/{username}', [
+Route::get('/events/show/{username}', [
     'uses' => 'EventController@getIndex',
     'as' => 'events',
 ]);
@@ -88,15 +89,31 @@ Route::get('/events/{username}', [
 Route::get('/events/add', [
     'uses' => 'EventController@getAdd',
     'as' => 'events.add',
+    'middleware' => 'auth'
 ]);
+
 
 Route::post('/events/add', [
     'uses' => 'EventController@postAdd',
+    'middleware' => 'auth'
 ]);
 
-Route::get('/events/{id}', [
+Route::get('/events/delete/{id}', [
     'uses' => 'EventController@getDelete',
     'as' => 'events.delete',
+    'middleware' => 'auth'
+]);
+
+Route::get('/events/delete/{id}', [
+    'uses' => 'EventController@getDelete',
+    'as' => 'events.delete',
+    'middleware' => 'auth'
+]);
+
+Route::get('/events/vote/{id}/{answer}', [
+    'uses' => 'EventController@getVote',
+    'as' => 'events.vote',
+    'middleware' => 'auth'
 ]);
 
 
@@ -113,12 +130,13 @@ Route::get('/events/{id}', [
 Route::get('/friends', [
     'uses' => 'FriendController@getIndex',
     'as' => 'friends',
+    'middleware' => 'auth'
 ]);
 
 //send a friend request
-Route::post('/friends/add/{username}', [
+Route::get('/friends/add/{username}', [
     'uses' => 'FriendController@getAdd',
-    'as' => 'friends.sendRequest',
+    'as' => 'friends.add',
     'middleware' => 'auth'
 ]);
 
@@ -126,19 +144,22 @@ Route::post('/friends/add/{username}', [
 //accept friend request
 Route::get('/friends/accept/{username}', [
     'uses' => 'FriendController@getAccept',
-    'as'  => 'friends.accept'
+    'as'  => 'friends.accept',
+    'middleware' => 'auth'
 ]);
 
 //accept friend request
 Route::get('/friends/decline/{username}', [
     'uses' => 'FriendController@getDecline',
-    'as'  => 'friends.decline'
+    'as'  => 'friends.decline',
+    'middleware' => 'auth'
 ]);
 
 
 //delete a friend
 Route::get('/friends/delete/{username}', [
     'uses' => 'FriendController@getDelete',
-    'as'  => 'friends.delete'
+    'as'  => 'friends.delete',
+    'middleware' => 'auth'
 ]);
 

@@ -17,7 +17,7 @@ class CreateEventsTable extends Migration
             $table->string('title');
             $table->string('description');
             $table->timestamp('when');
-            $table->string('location')->nullable();
+            $table->string('location');
             $table->boolean('locked');
 
             $table->integer('user_id')->unsigned();

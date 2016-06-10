@@ -44,9 +44,7 @@
             ])
             ->delete();
 
-            return redirect()
-                ->route('friends')
-                ->with('info', 'friend deleted.')
+            return back()->with('info', 'friend deleted.');
             ;
         }
 
@@ -64,7 +62,7 @@
                 return redirect()->route('home');
             }
 
-            Auth::user()->addFriend($friend);
+            Auth::user()->addFriend($friend);//sending the request
 
             return redirect()
                 ->route('events', ['username' => $username])
@@ -75,7 +73,7 @@
         /**
          * accept a friend request 
          * @param  [string] $username 
-         * @return 
+         * @return object   returns the user to the previous page or home
          */
         public function getAccept($username)
         {
@@ -84,14 +82,13 @@
             $user = Auth::user();
             if(!$user->friendRequests($friend))
             {
-                die('no request');
                 return redirect()->route('home');
             }
 
             $user->acceptFriendRequest($friend);
 
              return redirect()
-                ->route('friends')
+                ->back()
                 ->with('info', "you and {$username} are now friends.");
             ;
         }

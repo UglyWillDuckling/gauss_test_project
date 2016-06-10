@@ -25,11 +25,6 @@ namespace App\Models;
             'remember-token',
         ];
 
-        public function getName(){
-
-            return $this->username;
-        }
-
         public function friendsOfMine(){
             return $this
             ->belongsToMany('App\Models\User', 'friends', 'user_id', 'friend_id');
@@ -59,21 +54,7 @@ namespace App\Models;
         public function friendRequestsPending(){
             return $this->friendOf()->wherePivot('accepted', false)->get();
         }
-
-        /**
-         * check if the current user sent a request to the user given
-         * @param  User    $user the user to check
-         * @return boolean return yes or no
-         */
-        public function hasFriendRequestPending(User $user)
-        {
-            return (bool) $this->friendRequestsPending()->where('id', $user->id)->count();
-        }
         
-        public function hasFriendRequestReceived(User $user){
-            return (bool) $this->friendRequests()->where('id', $user->id)->count();
-        }
-
         public function addFriend(User $user){
             $this->friendOf()->attach($user->id);
         }
@@ -86,12 +67,6 @@ namespace App\Models;
 
         public function isFriendsWith(User $user){
             return (bool) $this->friends()->where('id', $user->id)->count();
-        }
-
-        public function events()
-        {
-            //return the upcoming events from this user and all of his friends
-            #return $this->
         }
 
         public function myEvents(){
@@ -116,6 +91,10 @@ namespace App\Models;
 
         public function relationStatus(User $user){
 
+            if($this == $user){
+                return 'own';
+            }
+
             if(!$rel = $this->hasRelationWith($user))
             {
                 return 'send';
@@ -125,10 +104,18 @@ namespace App\Models;
                 return 'friends';
             }
 
-            if($rel->user_id == $this->id){ 
+            if($rel->friend_id == $this->id){ 
                 return 'sent';
             }
 
             return 'received';
+        }
+
+        /**
+         * retrieve all the votes from this user
+         * @return [type] [description]
+         */
+        public function votes(){
+            return $this->hasMany('App\Models\Vote');
         }
     }

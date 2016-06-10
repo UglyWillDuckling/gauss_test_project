@@ -57,8 +57,8 @@
             return redirect()->route('home')->with('info', 'you have been signed in.');
         }
 
-        public function getSignout(){
-
+        public function getSignout()
+        {
             Auth::logout();
 
             return redirect()->route('home');

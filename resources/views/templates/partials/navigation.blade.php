@@ -7,7 +7,12 @@
                 <ul class="nav navbar-nav leftMargin">
                    
                      @if (Auth::check())
-                        <li><a href="{{ route('events', ['username' => Auth::user()->username ]) }}">my Events</a></li>
+
+                        <li>
+                            <a href="{{ route('events', ['username' => Auth::user()->username ]) }}">         my Events
+                            </a>
+                        </li>
+                        <li><a href="{{ route('events.add') }}">add event</a></li>
                         <li><a href="{{ route('friends') }}">Friends</a></li>
                     @endif           
                 </ul>
