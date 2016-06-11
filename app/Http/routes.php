@@ -13,7 +13,8 @@
 
 Route::get('/', [
     'uses' => 'HomeController@getIndex',
-    'as' => 'home'
+    'as' => 'home',
+    'middleware' => 'auth'
 ]);
 
 
@@ -113,6 +114,12 @@ Route::get('/events/delete/{id}', [
 Route::get('/events/vote/{id}/{answer}', [
     'uses' => 'EventController@getVote',
     'as' => 'events.vote',
+    'middleware' => 'auth'
+]);
+
+Route::get('/events/locking/{id}/{order}', [
+    'uses' => 'EventController@getLocking',
+    'as' => 'events.locking',
     'middleware' => 'auth'
 ]);
 

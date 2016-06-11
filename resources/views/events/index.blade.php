@@ -11,7 +11,12 @@
 
         @foreach ($events as $event)
 
-        <div class="media@if ($event->locked) {{ ' locked' }} @endif">
+        <div class="media rel">
+            @if ($event->locked)
+                <div class="locked">
+                    
+                </div>
+            @endif
             <div class="media-body">
                 <h4 class="media-heading">{{ $event->title }}
                     <small>
@@ -21,16 +26,16 @@
                 <p>
                     {{ $event->description }} 
                 </p>     
-                <p>vrijeme i lokacija:{{ $event->location }}, {{ $event->when->diffForHumans() }}</p>      
+                <p>vrijeme i lokacija:{{ $event->location }}, {{ $event->when->addHours(2)->diffForHumans() }}</p>      
                 
-                @if ($status == 'friends' && $event->locked == false)  
+                @if ($status == 'friends' && !$event->locked)  
                     <?php 
 
                         $answers= ['moze' => 0, 'ne moze' => 0, 'svejedno mi je' => 0];
                         foreach($event->votes as $vote)
                         {
                             $answers[$vote->answer]++;
-                            if($vote->user_id == Auth::user()->id) $userVote = $vote->answer;
+                            if($vote->user_id == Auth::user()->id) $userVote = $vote->answer;//check the user vote
                         }
                     ?>
 
@@ -49,16 +54,21 @@
                         class="@if($userVote == 'svejedno mi je'){{ 'selected' }} @endif">
                             nije me briga
                         </a><span class="numberCircle">{{ $answers['svejedno mi je']}}</span>
-                    </p>
+                    </p>             
                 @endif
-            </div>
+            </div>        
         </div>
+            @if($status == 'own')
+                @if(!$event->locked)
+                    <a href="{{ route('events.locking', [$event->id, 1])}}" class="btn btn-primary">lock the event</a>
+                @else
+                   <a href="{{ route('events.locking', [$event->id, 0])}}" class="btn btn-primary">unlock the event</a> 
+                @endif
+            @endif
         @endforeach
     </div> 
 
      <div class="col-lg-4">
-        @if (Auth::check())
             @include('templates/partials/statuses/' . $status)
-        @endif
     </div>   
 @stop

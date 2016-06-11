@@ -38,10 +38,10 @@
 
             
             $events = $user->myEvents()
-                ->whereRaw(" `when` > UTC_TIMESTAMP()")
-                ->orderBy('when', 'desc')
+                ->whereRaw(" `when` > UTC_TIMESTAMP()")    
                 ->with('User')
                 ->with('votes')
+                ->orderBy('when', 'asc')
                 ->get()
             ;
 
@@ -60,7 +60,6 @@
 
         public function postAdd(Request $request)
         {
-
             $this->validate($request, [
                 'title' => 'required|min:3',
                 'description' => 'required|min:6',
@@ -69,9 +68,8 @@
             ]);   
 
             $t = str_replace('T', ' ', $request->input('time'));
-            $format = 'Y-m-d H:i';
 
-            $date = DateTime::createFromFormat($format, $t);
+            $date = DateTime::createFromFormat('Y-m-d H:i', $t);
             
             if(!$date){
                 redirect()->back()->with('the given time is invalid.');
@@ -89,7 +87,7 @@
             $event = new Event([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
-                'when' => $date->format($format),
+                'when' => $date->format('Y-m-d H:i:s'),
                 'location' => $request->input('location'),
             ]);
 
@@ -103,7 +101,11 @@
 
         public function getVote($eventId, $answer){        
 
-            $event = Event::where('id', '=', $eventId)->with('User')->first();
+            $event = Event::where('id', '=', $eventId)
+                ->where('locked', '=', '0')
+                ->with('User')
+                ->firstOrFail();
+
 
             if(!Auth::user()->isFriendsWith($event->user))
             {
@@ -120,5 +122,19 @@
             $vote->save();
 
             return redirect()->back();
+        }
+
+        public function getLocking($eventId, $order){
+
+            $event = Auth::user()
+                ->myEvents()
+                ->where('id', '=', $eventId)
+                ->where('locked', '=', !$order)
+                ->firstOrFail();
+
+            $event->locked = $order;//locking the event
+            $event->save(); 
+
+            return redirect()->back()->with('info', 'event locked.');
         }
     }

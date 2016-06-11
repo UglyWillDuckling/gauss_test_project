@@ -1,26 +1,40 @@
 
-    .leftMargin{
-        margin-left: 15px;
+	.leftMargin
+	{
+		margin-left: 15px;
+	}
+
+	.numberCircle {
+		border-radius: 50%;
+		width: 12px;
+		height: 12px;
+		background: #000;
+		border: 2px solid black;
+		color: white;
+		text-align: center;
+		font: 8px Arial, sans-serif;
+		display: inline-block;
+	}
+
+	.selected{
+		font-weight: 600;
+	}
+
+	.locked
+	{
+	   position: absolute;
+	   width: 100%;
+	   height: 100%;
+	   z-index: 10;
+
+       opacity: 0.3;
+       background-color: black;
+	}
+
+    .rel{
+        position: relative;
     }
 
-    .numberCircle {
-    border-radius: 50%;
-    width: 12px;
-    height: 12px;
-    background: #000;
-    border: 2px solid black;
-    color: white;
-    text-align: center;
-    font: 8px Arial, sans-serif;
-    display: inline-block;
-}
-
-    .selected{
-        font-weight: 600;
-    }
-
-    .locked{
-        &.overlay{
-            display: block;
-        }
+    .media-body{
+        padding: 5px;
     }
