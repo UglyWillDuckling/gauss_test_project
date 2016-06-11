@@ -75,7 +75,6 @@
             }
 
 
-
             $stamp = $date->getTimestamp();
             if( !( $stamp > (time() + (60*60*2)) ) )
             {
