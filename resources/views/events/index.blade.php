@@ -26,8 +26,8 @@
                 <p>
                     {{ $event->description }} 
                 </p>     
-                <p>vrijeme i lokacija:{{ $event->location }}, {{ $event->when->addHours(2)->diffForHumans() }}
-                </p>     
+                <p>vrijeme i lokacija:{{ $event->location }}, {{ $event->when->diffForHumans() }}
+                </p> 
                 
                 @if ($status == 'friends' && !$event->locked)  
                     <?php 
@@ -65,6 +65,8 @@
                 @else
                    <a href="{{ route('events.locking', [$event->id, 0])}}" class="btn btn-primary">unlock the event</a> 
                 @endif
+
+                <a href="{{ route('events.delete', [$event->id])}}" class="btn btn-primary">delete event</a>
             @endif
         @endforeach
     </div> 

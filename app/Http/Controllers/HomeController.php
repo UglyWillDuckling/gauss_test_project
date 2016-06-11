@@ -21,8 +21,8 @@
             ->whereRaw(" `when` > UTC_TIMESTAMP()")
             ->with('User')
             ->with('votes')
-            ->orderBy('when', 'desc')
-            ->paginate(10);
+            ->orderBy('when', 'asc')
+            ->paginate(15);
 
 
             return view('home.index')

@@ -42,7 +42,7 @@
                 ->with('User')
                 ->with('votes')
                 ->orderBy('when', 'asc')
-                ->get()
+                ->paginate(10);
             ;
 
             return view('events.index')
@@ -74,9 +74,8 @@
                 redirect()->back()->with('the given time is invalid.');
             }
 
-
             $stamp = $date->getTimestamp();
-            if( !( $stamp > (time() + (60*60*2)) ) )
+            if( !( $stamp > (time() + (60*60*2)) ) ) //the time needs to be at least 2 hours from now
             {
                 redirect()->back()->with('the given time is invalid.');
             }
@@ -87,10 +86,9 @@
             $event = new Event([
                 'title' => $request->input('title'),
                 'description' => $request->input('description'),
-                'when' => $date->format('Y-m-d H:i:s'),
+                'when' => (string) $stamp, //for this to work properly, we have to make this a string
                 'location' => $request->input('location'),
             ]);
-
             Auth::user()->myEvents()->save($event);
 
             return redirect()
@@ -136,5 +134,17 @@
             $event->save(); 
 
             return redirect()->back()->with('info', 'event locked.');
+        }
+
+        public function getDelete($eventId){
+
+            $event = Auth::user()
+                ->myEvents()
+                ->where('id', '=', $eventId)
+                ->firstOrFail()
+            ;
+            $event->delete();
+
+            return redirect()->back()->with('info', 'event deleted.');
         }
     }

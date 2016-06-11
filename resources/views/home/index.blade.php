@@ -21,7 +21,7 @@
                 <p>
                     {{ $event->description }} 
                 </p>     
-                <p>vrijeme i lokacija:{{ $event->location }}, {{ $event->when }}</p>    
+                <p>vrijeme i lokacija:{{ $event->location }}, {{ $event->when->diffForHumans() }}</p>    
                 @if ($event->user->id != $user->id)
                     <?php 
 
