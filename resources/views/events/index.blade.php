@@ -26,7 +26,24 @@
                 <p>
                     {{ $event->description }} 
                 </p>     
-                <p>vrijeme i lokacija:{{ $event->location }}, {{ $event->when->addHours(2)->diffForHumans() }}</p>      
+                <p>vrijeme i lokacija:{{ $event->location }}, {{ $event->when->addHours(2)->diffForHumans() }}
+                </p> 
+
+
+                <?php
+
+                    $carbon = $event->when;
+
+                    echo "Zagreb stamp: ".$carbon->timestamp;
+                    echo "<br> Zagreb date: ".$carbon->toDateTimeString();
+
+                    $carbon->tz('UTC');
+
+                    echo "<br> UTC stamp: ".$carbon->timestamp;
+
+                    echo "<br> UTC date: ".$carbon->toDateTimeString();
+
+                ?>     
                 
                 @if ($status == 'friends' && !$event->locked)  
                     <?php 
@@ -37,6 +54,14 @@
                             $answers[$vote->answer]++;
                             if($vote->user_id == Auth::user()->id) $userVote = $vote->answer;//check the user vote
                         }
+
+                        $carbon = $event->when;
+
+                        echo "Zagreb stamp: ".$carbon->timestamp;
+
+                        $carbon->tz('UTC');
+
+                        echo "<br> UTC stamp: ".$carbon->timestamp;
                     ?>
 
                     <p>

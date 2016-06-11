@@ -67,21 +67,22 @@
                 'location' => 'required|min:3',
             ]);   
 
-            $t = str_replace('T', ' ', $request->input('time'));
-
+            $t = str_replace('T', ' ', $request->input('time'));//we need to remove the 'T' from the string
             $date = DateTime::createFromFormat('Y-m-d H:i', $t);
             
             if(!$date){
                 redirect()->back()->with('the given time is invalid.');
             }
 
+
+
             $stamp = $date->getTimestamp();
             if( !( $stamp > (time() + (60*60*2)) ) )
             {
                 redirect()->back()->with('the given time is invalid.');
             }
+            $date->setTimezone(new DateTimeZone('UTC'));//converting to UTC time
 
-            $date->setTimezone(new DateTimeZone('UTC'));
 
             //save the new event
             $event = new Event([
