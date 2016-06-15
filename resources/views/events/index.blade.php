@@ -32,6 +32,7 @@
                 @if ($status == 'friends' && !$event->locked)  
                     <?php 
 
+                        $userVote = '';
                         $answers= ['moze' => 0, 'ne moze' => 0, 'svejedno mi je' => 0];
                         foreach($event->votes as $vote)
                         {
@@ -53,7 +54,7 @@
 
                         <a href="{{ route('events.vote', [$event->id, 'svejedno mi je']) }}" 
                         class="@if($userVote == 'svejedno mi je'){{ 'selected' }} @endif">
-                            nije me briga
+                            svejedno mi je
                         </a><span class="numberCircle">{{ $answers['svejedno mi je']}}</span>
                     </p>             
                 @endif
