@@ -70,7 +70,8 @@
             @endif
         @endforeach
     </div> 
-
+    {!! $events->render() !!}
+ 
      <div class="col-lg-4">
             @include('templates/partials/statuses/' . $status)
     </div>   

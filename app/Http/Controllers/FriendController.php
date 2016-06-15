@@ -34,7 +34,7 @@
             if(!$relation || $relation->accepted == false)
             {
                 return redirect()->route('home'); //if the users don't have a relation or if they aren't
-                                         //not friends there's obviously nothing to do here
+                                                 //friends, there's obviously nothing to do here
             }
 
             DB::table('friends')
@@ -43,6 +43,7 @@
                 'friend_id' => $relation->friend_id
             ])
             ->delete();
+            #we could do this with the User relations but it's easier this way
 
             return back()->with('info', 'friend deleted.');
             ;
@@ -57,6 +58,7 @@
 
             $friend = User::where('username', '=', $username)->firstOrFail();
 
+            //check if the users are already friends or whether a friend request was send
             if(Auth::user()->hasRelationWith($friend))
             {
                 return redirect()->route('home');

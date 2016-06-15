@@ -35,8 +35,7 @@
             else{
                 $status = 'none';          
             }
-
-            
+       
             $events = $user->myEvents()
                 ->whereRaw(" `when` > UTC_TIMESTAMP()")    
                 ->with('User')
@@ -57,20 +56,23 @@
             return view('events.add');
         }
 
-
+        /**
+         * adding a new event
+         * @param  Request $request 
+         * @return [type] redirects back to the events page
+         */
         public function postAdd(Request $request)
         {
-            $this->validate($request, [
+            $this->validate($request, [//some basic validation
                 'title' => 'required|min:3',
                 'description' => 'required|min:6',
                 'time' => 'required',
                 'location' => 'required|min:3',
             ]);   
 
-            $t = str_replace('T', ' ', $request->input('time'));//we need to remove the 'T' from the string
-            $date = DateTime::createFromFormat('Y-m-d H:i', $t);
             
-            if(!$date){
+            if(!$date = DateTime::createFromFormat('d F Y - H:i', $request->input('time')) )
+            {
                 redirect()->back()->with('the given time is invalid.');
             }
 
@@ -79,8 +81,6 @@
             {
                 redirect()->back()->with('the given time is invalid.');
             }
-            $date->setTimezone(new DateTimeZone('UTC'));//converting to UTC time
-
 
             //save the new event
             $event = new Event([
@@ -101,13 +101,11 @@
 
             $event = Event::where('id', '=', $eventId)
                 ->where('locked', '=', '0')
-                ->with('User')
-                ->firstOrFail();
+                ->with('User')->firstOrFail();
 
-
-            if(!Auth::user()->isFriendsWith($event->user))
+            if(!Auth::user()->isFriendsWith($event->user))//the users have to be friends for this to work
             {
-                return redirect()->back()->with('info', 'not friends');
+                return redirect()->back();
             }
 
 
@@ -122,6 +120,12 @@
             return redirect()->back();
         }
 
+        /**
+         * locking or unlocking the event
+         * @param  string $eventId 
+         * @param  string $order   the lock order(lock or unlock)
+         * @return [type]         
+         */
         public function getLocking($eventId, $order){
 
             $event = Auth::user()
@@ -130,7 +134,7 @@
                 ->where('locked', '=', !$order)
                 ->firstOrFail();
 
-            $event->locked = $order;//locking the event
+            $event->locked = $order;
             $event->save(); 
 
             return redirect()->back()->with('info', 'event locked.');

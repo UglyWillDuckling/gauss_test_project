@@ -54,5 +54,5 @@
         </div>
     @endforeach
     </div>
-   
+    {!! $events->render() !!}
 @stop

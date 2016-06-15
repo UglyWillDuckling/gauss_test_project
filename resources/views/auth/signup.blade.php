@@ -36,7 +36,6 @@
                     <input type="text" name="password" id="password" class="form-control">
                     @if ($errors->has('password'))
                         <span class="help-block">{{ $errors->first('password') }}</span>
-
                     @else
                        <span class="help-block">minimalno 6 znakova</span> 
                     @endif

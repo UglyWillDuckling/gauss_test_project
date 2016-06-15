@@ -36,6 +36,10 @@ namespace App\Models;
             ->belongsToMany('App\Models\User', 'friends', 'friend_id', 'user_id');
         }
 
+        /**
+         * merge the two relationship results into one to get all of the users friends
+         * @return Collection object 
+         */
         public function friends(){
             
             return 
@@ -46,11 +50,19 @@ namespace App\Models;
                 );
         }
 
+        /**
+         * get the requests this user received but not yet answered
+         * @return Collection object
+         */
         public function friendRequests()
         {
             return $this->friendsOfMine()->wherePivot('accepted', false)->get();
         }
 
+        /**
+         * get pending requests sent from this user
+         * @return Collection object
+         */
         public function friendRequestsPending(){
             return $this->friendOf()->wherePivot('accepted', false)->get();
         }
@@ -59,6 +71,11 @@ namespace App\Models;
             $this->friendOf()->attach($user->id);
         }
 
+        /**
+         * update the pivot table to true
+         * @param  User   $user 
+         * @return void
+         */
         public function acceptFriendRequest(User $user){
             $this->friendRequests()->where('id', $user->id)->first()->pivot->update([
                 'accepted' => true
@@ -69,12 +86,11 @@ namespace App\Models;
             return (bool) $this->friends()->where('id', $user->id)->count();
         }
 
-        public function myEvents(){
-
-            //return just the users events
-            return $this->hasMany('App\Models\Event', 'user_id');
-        }
-
+        /**
+         * determines wheter the user has a relationship with a different user
+         * @param  object $user 
+         * @return object or false     
+         */
         public function hasRelationWith($user)
         {         
             return DB::table('friends')
@@ -88,7 +104,11 @@ namespace App\Models;
             ])
             ->first();
         }
-
+        /**
+         * returns the type of relation between two users
+         * @param  User   $user
+         * @return string string representation of the relationship     
+         */
         public function relationStatus(User $user){
 
             if($this == $user){
@@ -111,9 +131,17 @@ namespace App\Models;
             return 'received';
         }
 
+         /**
+         * hasMany relation for users events
+         * @return object
+         */
+        public function myEvents(){   
+            return $this->hasMany('App\Models\Event', 'user_id');
+        }
+
         /**
-         * retrieve all the votes from this user
-         * @return [type] [description]
+         * hasMany relation for the users votes
+         * @return object
          */
         public function votes(){
             return $this->hasMany('App\Models\Vote');

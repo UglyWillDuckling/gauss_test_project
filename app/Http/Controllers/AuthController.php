@@ -22,6 +22,8 @@
                 'email' => 'required|unique:users|email|max:255',
                 'username' => 'required|unique:users|alpha_dash|max:25',
                 'password' => 'required|min:6',
+
+            //in case the validation fails the user is redirected back
            ]);
 
             User::create([
@@ -32,7 +34,7 @@
 
             return redirect()
                ->route('auth.signin')
-               ->with('info', 'your account has been created.')
+               ->with('info', 'your account has been created, you may now sign in.')
             ;
         }
 
@@ -49,7 +51,7 @@
             ]);
 
             if(!Auth::attempt($request->only(['email', 'password']), $request->has('
-                remember')))//in case the authentication fails
+                remember')))//check the email and password, see if the user checked the rememberMe box
             {
               return redirect()->back()->with('info', 'could not sign you in with those details.');
             }
